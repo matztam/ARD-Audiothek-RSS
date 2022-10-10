@@ -1,5 +1,4 @@
 <?php
-
 /*
 Dependencies:
     php-curl
@@ -13,14 +12,14 @@ Usage:
     Feed url: https://example.com/ardaudiothek-rss.php?show=10777871
 */
 
-header('Content-Type: application/rss+xml; charset=utf-8');
+header('Content-Type: text/xml; charset=utf-8');
 
 $showId = $_GET['show'];
 
 if(!is_numeric($showId)){
     exit;
 }
-$show = getShowJson($showId);
+$show = getShowJsonGraphql($showId);
 
 
 print('<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">');
@@ -74,6 +73,61 @@ function getShowJson($showId) {
     $obj = json_decode($output);
 
     return $obj->data->programSet;
+}
+
+function getShowJsonGraphql($showId){
+	$url = 'https://api.ardaudiothek.de/graphql';
+	
+	$query = '{"query":"{
+	  programSet(id:%d){
+		title,
+		synopsis,
+		image{
+		  url,
+		  url1X1,
+		},
+		items(orderBy:PUBLISH_DATE_DESC, filter: { isPublished: { equalTo: true }}){ 
+		  nodes{
+			title,
+			summary,
+			synopsis,
+			sharingUrl,
+			publicationStartDateAndTime: publishDate,
+			url,
+			episodeNumber,
+			duration,
+			isPublished,
+			audios{
+			  url,
+			  downloadUrl,
+			  size,
+			  mimeType,
+			}
+		  }
+		}
+	  }
+	}"}';
+
+	$query = sprintf($query, $showId);
+	$query = preg_replace("/\n/m", '\n', $query);
+
+	
+	$headers = array();
+	$headers[] = 'Content-Type: application/json';
+	
+	$ch = curl_init();
+
+	curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+	$output = curl_exec($ch);
+	
+	$obj = json_decode($output);
+	
+	return $obj->data->programSet;
 }
 
 
