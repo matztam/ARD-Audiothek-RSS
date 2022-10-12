@@ -15,24 +15,25 @@ Usage:
 header('Content-Type: text/xml; charset=utf-8');
 
 $showId = $_GET['show'];
-
 if(!is_numeric($showId)){
     exit;
 }
-$show = getShowJsonGraphql($showId);
+$show = getShowJson($showId);
+
+
 
 
 print('<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">');
 print('<channel>');
 
 printf('<title>%s</title>', escapeString($show->title));
-printf('<link>https://www.ardaudiothek.de/sendung/%s</link>', $show->path);
+printf('<link>%s</link>', $show->sharingUrl);
 
 
 print('<image>');
 printf('<url>%s</url>', escapeString(str_replace("{width}", "448", $show->image->url1X1)));
 printf('<title>%s</title>', escapeString($show->title));
-printf('<link>https://www.ardaudiothek.de/sendung/%s</link>', $show->path);
+printf('<link>%s</link>', $show->sharingUrl);
 print('</image>');
 
 printf('<description>%s</description>', escapeString($show->synopsis));
@@ -56,7 +57,7 @@ foreach ($show->items->nodes as $item) {
 
 
 print('</channel>');
-print('</rss>');
+print('</rss>'); 
 
 
 function getShowJson($showId) {
@@ -70,64 +71,10 @@ function getShowJson($showId) {
 
     $output = curl_exec($ch);
 
-    $obj = json_decode($output);
 
-    return $obj->data->programSet;
-}
+   $obj = json_decode($output);
 
-function getShowJsonGraphql($showId){
-	$url = 'https://api.ardaudiothek.de/graphql';
-	
-	$query = '{"query":"{
-  programSet(id:%d){
-    title,
-    synopsis,
-    image{
-      url,
-      url1X1,
-    },
-    items(orderBy:PUBLISH_DATE_DESC, filter: { isPublished: { equalTo: true }}){ 
-      nodes{
-        title,
-        summary,
-        synopsis,
-        sharingUrl,
-        publicationStartDateAndTime: publishDate,
-        url,
-        episodeNumber,
-        duration,
-        isPublished,
-        audios{
-          url,
-          downloadUrl,
-          size,
-          mimeType,
-        }
-      }
-    }
-  }
-}"}';
-
-	$query = sprintf($query, $showId);
-	$query = preg_replace("/\n/m", '\n', $query);
-
-	
-	$headers = array();
-	$headers[] = 'Content-Type: application/json';
-	
-	$ch = curl_init();
-
-	curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-	$output = curl_exec($ch);
-	
-	$obj = json_decode($output);
-	
-	return $obj->data->programSet;
+   return $obj->data->programSet;
 }
 
 
