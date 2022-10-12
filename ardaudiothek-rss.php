@@ -26,7 +26,7 @@ print('<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.
 print('<channel>');
 
 printf('<title>%s</title>', escapeString($show->title));
-printf('<link>https://www.ardaudiothek.de/sendung/%s</link>', $show->path);
+printf('<link>%s</link>', $show->sharingUrl);
 
 
 print('<image>');
@@ -78,39 +78,9 @@ function getShowJson($showId) {
 function getShowJsonGraphql($showId){
 	$url = 'https://api.ardaudiothek.de/graphql';
 	
-	$query = '{"query":"{
-  programSet(id:%d){
-    title,
-    synopsis,
-    image{
-      url,
-      url1X1,
-    },
-    items(orderBy:PUBLISH_DATE_DESC, filter: { isPublished: { equalTo: true }}){ 
-      nodes{
-        title,
-        summary,
-        synopsis,
-        sharingUrl,
-        publicationStartDateAndTime: publishDate,
-        url,
-        episodeNumber,
-        duration,
-        isPublished,
-        audios{
-          url,
-          downloadUrl,
-          size,
-          mimeType,
-        }
-      }
-    }
-  }
-}"}';
+	$query='{"query":"{programSet(id:%d){title,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
 
 	$query = sprintf($query, $showId);
-	$query = preg_replace("/\n/m", '\n', $query);
-
 	
 	$headers = array();
 	$headers[] = 'Content-Type: application/json';
@@ -118,7 +88,7 @@ function getShowJsonGraphql($showId){
 	$ch = curl_init();
 
 	curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
