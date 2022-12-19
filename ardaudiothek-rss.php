@@ -78,7 +78,7 @@ function getShowJson($showId) {
 function getShowJsonGraphql($showId){
 	$url = 'https://api.ardaudiothek.de/graphql';
 	
-	$query='{"query":"{programSet(id:%d){title,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
+	$query='{"query":"{programSet(id:%d){title,path,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
 
 	$query = sprintf($query, $showId);
 	
