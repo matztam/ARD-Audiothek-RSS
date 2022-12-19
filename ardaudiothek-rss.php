@@ -10,16 +10,21 @@ Usage:
     Id: 10777871
 
     Feed url: https://example.com/ardaudiothek-rss.php?show=10777871
+
+    If you only want to receive the n newest episodes, pass the first parameter too:
+
+    Feed url with 10 newest episodes: https://example.com/ardaudiothek-rss.php?show=10777871&first=10
 */
 
 header('Content-Type: text/xml; charset=utf-8');
 
 $showId = $_GET['show'];
+$first  = isset($_GET['first']) ? $_GET['first'] : 0;
 
-if(!is_numeric($showId)){
+if(!is_numeric($showId) || !is_numeric($first)){
     exit;
 }
-$show = getShowJsonGraphql($showId);
+$show = getShowJsonGraphql($showId, $first);
 
 
 print('<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">');
@@ -36,7 +41,7 @@ printf('<link>https://www.ardaudiothek.de/sendung/%s</link>', $show->path);
 print('</image>');
 
 printf('<description>%s</description>', escapeString($show->synopsis));
-printf('<atom:link href="%s" rel="self" type="application/rss+xml"/>', "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
+printf('<atom:link href="%s" rel="self" type="application/rss+xml"/>', "//{$_SERVER['HTTP_HOST']}".escapeString($_SERVER['REQUEST_URI']));
 
 
 foreach ($show->items->nodes as $item) {
@@ -75,12 +80,16 @@ function getShowJson($showId) {
     return $obj->data->programSet;
 }
 
-function getShowJsonGraphql($showId){
+function getShowJsonGraphql($showId, $first){
 	$url = 'https://api.ardaudiothek.de/graphql';
 	
-	$query='{"query":"{programSet(id:%d){title,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
+	$query='{"query":"{programSet(id:%d){title,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}'.($first ? 'first:%d' : '').'){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
 
-	$query = sprintf($query, $showId);
+    if ($first) {
+        $query = sprintf($query, $showId, $first);
+    } else {
+        $query = sprintf($query, $showId);
+    }
 	
 	$headers = array();
 	$headers[] = 'Content-Type: application/json';
