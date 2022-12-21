@@ -13,18 +13,18 @@ Usage:
 
     If you only want to receive the n newest episodes, pass the first parameter too:
 
-    Feed url with 10 newest episodes: https://example.com/ardaudiothek-rss.php?show=10777871&first=10
+    Feed url with 10 latest episodes: https://example.com/ardaudiothek-rss.php?show=10777871&latest=10
 */
 
 header('Content-Type: text/xml; charset=utf-8');
 
 $showId = $_GET['show'];
-$first  = isset($_GET['first']) ? $_GET['first'] : 0;
+$latest  = isset($_GET['latest']) ? $_GET['latest'] : 2147483647;
 
-if(!is_numeric($showId) || !is_numeric($first)){
+if(!is_numeric($showId) || !is_numeric($latest)){
     exit;
 }
-$show = getShowJsonGraphql($showId, $first);
+$show = getShowJsonGraphql($showId, $latest);
 
 
 print('<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">');
@@ -80,17 +80,13 @@ function getShowJson($showId) {
     return $obj->data->programSet;
 }
 
-function getShowJsonGraphql($showId, $first){
+function getShowJsonGraphql($showId, $latest){
 	$url = 'https://api.ardaudiothek.de/graphql';
 	
-	$query='{"query":"{programSet(id:%d){title,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}'.($first ? 'first:%d' : '').'){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
+	$query='{"query":"{programSet(id:%d){title,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}first:%d){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
 
-    if ($first) {
-        $query = sprintf($query, $showId, $first);
-    } else {
-        $query = sprintf($query, $showId);
-    }
-	
+	$query = sprintf($query, $showId, $latest);
+	    
 	$headers = array();
 	$headers[] = 'Content-Type: application/json';
 	
