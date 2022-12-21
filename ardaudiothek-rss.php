@@ -32,7 +32,7 @@ printf('<link>%s</link>', $show->sharingUrl);
 print('<image>');
 printf('<url>%s</url>', escapeString(str_replace("{width}", "448", $show->image->url1X1)));
 printf('<title>%s</title>', escapeString($show->title));
-printf('<link>https://www.ardaudiothek.de/sendung/%s</link>', $show->path);
+printf('<link>https://www.ardaudiothek.de%s</link>', $show->path);
 print('</image>');
 
 printf('<description>%s</description>', escapeString($show->synopsis));
