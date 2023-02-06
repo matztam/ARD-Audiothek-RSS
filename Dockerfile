@@ -1,2 +1,2 @@
-FROM php:8.0-apache as base
+FROM php:8.2-apache
 COPY ./ardaudiothek-rss.php /var/www/html/index.php
