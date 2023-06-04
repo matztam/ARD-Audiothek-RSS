@@ -65,7 +65,14 @@ print('</rss>');
 
 
 function getShowJson($showId) {
-    $url = sprintf('https://api.ardaudiothek.de/programsets/%d', $showId);
+    $url_unvalidate = sprintf('https://api.ardaudiothek.de/programsets/%d', $showId);
+    $url = filter_var($url_unvalidate, FILTER_VALIDATE_URL);
+    if ($filtered_url) {
+        $filesize = getFileLength($filtered_url);
+    } else {
+    exit ;
+    }
+
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url);
