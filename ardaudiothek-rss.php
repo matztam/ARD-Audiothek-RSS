@@ -18,8 +18,8 @@ Usage:
 
 header('Content-Type: text/xml; charset=utf-8');
 
-$showId = $_GET['show'];
-$latest  = isset($_GET['latest']) ? $_GET['latest'] : 2147483647;
+$showId = isset($_GET['show']) ? filter_input(INPUT_GET, 'show', FILTER_SANITIZE_NUMBER_INT) : null;
+$latest = filter_input(INPUT_GET, 'latest', FILTER_SANITIZE_NUMBER_INT) ?: 2147483647;
 
 if(!is_numeric($showId) || !is_numeric($latest)){
     exit;
