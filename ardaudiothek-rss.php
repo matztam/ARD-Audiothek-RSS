@@ -65,7 +65,14 @@ print('</rss>');
 
 
 function getShowJson($showId) {
-    $url = sprintf('https://api.ardaudiothek.de/programsets/%d', $showId);
+    $url_unvalidate = sprintf('https://api.ardaudiothek.de/programsets/%d', $showId);
+    $url = filter_var($url_unvalidate, FILTER_VALIDATE_URL);
+    if ($filtered_url) {
+        $filesize = getFileLength($filtered_url);
+    } else {
+    exit ;
+    }
+
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -107,7 +114,7 @@ function getShowJsonGraphql($showId, $latest){
 
 
 function escapeString($string) {
-    return htmlspecialchars($string, ENT_XML1, 'UTF-8');
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
 function getFileLength($url) {
