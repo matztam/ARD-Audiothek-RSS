@@ -119,7 +119,10 @@ function escapeString($string) {
 
 function getFileLength($url) {
     $headers = get_headers($url, 1);
-    $filesize = $headers['Content-Length'];
-
+    if (isset($headers['Content-Length'])) {
+        $filesize = $headers['Content-Length'];
+    } else {
+        $filesize = -1;
+    }
     return $filesize;
 }
