@@ -56,6 +56,13 @@ foreach ($show->items->nodes as $item) {
     printf('<media:content url="%s" medium="audio" duration="%d" type="audio/mpeg"/>', escapeString($item->audios[0]->downloadUrl), $item->duration);
     printf('<pubDate>%s</pubDate>', (new DateTime($item->publicationStartDateAndTime))->format(DATE_RSS));
     printf('<itunes:duration>%d</itunes:duration>', $item->duration);
+
+    print('<image>');
+    printf('<url>%s</url>', escapeString(str_replace("{width}", "448", $item->image->url1X1)));
+    printf('<title>%s</title>', escapeString($show->title));
+    print('</image>');
+    printf('<itunes:image href="%s"/>', escapeString(str_replace("{width}", "448", $item->image->url1X1)));
+
     print('</item>');
 }
 
@@ -90,10 +97,10 @@ function getShowJson($showId) {
 function getShowJsonGraphql($showId, $latest){
 	$url = 'https://api.ardaudiothek.de/graphql';
 	
-	$query='{"query":"{programSet(id:%d){title,path,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}first:%d){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
+	$query='{"query":"{programSet(id:%d){title,path,synopsis,sharingUrl,image{url,url1X1,},items(orderBy:PUBLISH_DATE_DESC,filter:{isPublished:{equalTo:true}}first:%d){nodes{title,summary,synopsis,sharingUrl,publicationStartDateAndTime:publishDate,url,episodeNumber,duration,image{url,url1X1,},isPublished,audios{url,downloadUrl,size,mimeType,}}}}}"}';
 
 	$query = sprintf($query, $showId, $latest);
-	    
+
 	$headers = array();
 	$headers[] = 'Content-Type: application/json';
 	
