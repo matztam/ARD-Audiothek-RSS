@@ -2,8 +2,6 @@ version: '3.3'
 
 services:
   application:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/frauhottelmann/ard-audiothek-rss:latest
     ports:
       - 8080:80
