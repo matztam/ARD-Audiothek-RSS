@@ -51,7 +51,7 @@ foreach ($show->items->nodes as $item) {
     printf('<title>%s</title>', escapeString($item->title));
     printf('<description>%s</description>', escapeString($item->synopsis));
     printf('<guid>%s</guid>', escapeString($item->sharingUrl));
-    printf('<link>%s</link>', escapeString($item->audios[0]->downloadUrl));
+    printf('<link>%s</link>', escapeString($item->sharingUrl));
     printf('<enclosure url="%s" length="%d" type="audio/mpeg"/>', escapeString($item->audios[0]->url), $length);
     printf('<media:content url="%s" medium="audio" duration="%d" type="audio/mpeg"/>', escapeString($item->audios[0]->downloadUrl), $item->duration);
     printf('<pubDate>%s</pubDate>', (new DateTime($item->publicationStartDateAndTime))->format(DATE_RSS));
