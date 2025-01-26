@@ -22,7 +22,8 @@ $showId = isset($_GET['show']) ? filter_input(INPUT_GET, 'show', FILTER_SANITIZE
 $latest = filter_input(INPUT_GET, 'latest', FILTER_SANITIZE_NUMBER_INT) ?: 2147483647;
 
 if(!is_numeric($showId) || !is_numeric($latest)){
-    exit;
+    http_response_code(400);
+    exit('<error>Invalid "show" parameter</error>');
 }
 $show = getShowJsonGraphql($showId, $latest);
 
