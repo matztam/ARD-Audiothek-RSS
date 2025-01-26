@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+        /* thanks to https://perfectmotherfuckingwebsite.com */
+    body {
+        max-width: 650px;
+        margin: 40px auto;
+        padding: 0 10px;
+        font: 18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        color: #444
+    }
+
+    @media (prefers-color-scheme: dark) {
+        body {
+            color: #c9d1d9;
+            background: #0d1117
+        }
+
+        a:link {
+            color: #58a6ff
+        }
+
+        a:visited {
+            color: #8e96f0
+        }
+
+        input {
+            background: #282f3b;
+            border: none;
+        }
+
+        input, select, textarea{
+            color: #c9d1d9;
+        }
+        
+    }
+    </style>
+    <title>Nutzung des Audiothek-RSS-Feed Generators</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <!-- weitere Kopfinformationen -->
+    <!-- Kommentare werden im Browser nicht angezeigt. -->
+  </head>
+  <body>
+    <h1>Instruktionen</h1>
+    <p>Diese Seite kann einen RSS-Feed aus den Daten der ARD-Audiothek erzeugen. Dazu sind folgende Schritte nötig:</p>
+    <ul>
+        <li>Finde die ID des gewünschten Podcasts. Dies ist eine Zahlenfolge die am Ende der URL des Podcasts in der Audiothek hängt. Bspw 94702896 für den Podcast <a href="https://www.ardaudiothek.de/sendung/wild-wild-web-geschichten-aus-dem-internet/94702896/">Wild Wild Web</a> </li>
+        <li>Die folgende Datei öffnen und die ID dort hinter dem = einfügen: <a href="./ardaudiothek-rss.php?show=">ardaudiothek-rss</a>. </li>
+        <li>Beispielsweise ergibt sich so folgender Link: <a href="./ardaudiothek-rss.php?show=94702896">Beispiel Wild Wild Web</a>. </li>
+    </ul>
+    <p>Sollte man nur einen Feed mit den letzten X Folgen abonnieren wollen, kann man auch ein &quot;&amp;latest=X&quot; anhängen: <a href="./ardaudiothek-rss.php?show=94702896&latest=10">Beispiel Wild Wild Web, letzte 10 Folgen</a>. 
+    </br></br>
+<!--
+    <h2>Feed-ID Bestimmen</h2>
+    <p>Im folgenden Feld kann die URL aus der ARD Audiothek direkt eingefügt werden, um die ID zu extrahieren.</p>
+
+    <input type="ArdLink" id="ArdLink" alt="URL des Podcasts in der ARD Audiothek" />
+    <input type="button" id="calcIDBtn" value="Feed-ID extrahieren" onclick="javascript:" />
+-->
+
+    <h2>Feed Öffnen</h2>
+    <p>Im folgenden Feld die gewünschte Feed-ID eingeben, dann auf "Feed-Öffnen" klicken.</p>
+    <input type="FeedID" id="FeedID" alt="Feed-ID"/>
+    <input type="button" id="openFeed" value="Feed Öffnen" onClick="javascript: window.open('./ardaudiothek-rss.php?show=' + document.getElementById('FeedID').value);" />
+
+<!-- noch einen Button einbauen, der den Link unten drunter anzeigt und potentiell in die Zwischenablage kopiert? -->
+
+  </body>
+</html>
