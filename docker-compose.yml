@@ -1,9 +1,6 @@
-version: '3.3'
-
 services:
   application:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    container_name: ARD-Audiothek-RSS
+    image: ghcr.io/matztam/ard-audiothek-rss:latest
     ports:
       - 8080:80
