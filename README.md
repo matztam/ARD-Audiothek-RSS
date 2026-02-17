@@ -16,3 +16,7 @@ Feed url: https://example.com/ardaudiothek-rss.php?show=10777871
 If you only want to receive the n newest episodes, pass the latest parameter too:
 
 Feed url with 10 newest episodes: https://example.com/ardaudiothek-rss.php?show=10777871&latest=10
+
+## Helper page (index.html)
+
+This repository includes a small helper page at /index.html that explains how to generate an RSS feed for a show and helps you find the numeric **show id**
