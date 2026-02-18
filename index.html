@@ -36,20 +36,20 @@
         
     }
     </style>
-    <title>Nutzung des Audiothek-RSS-Feed Generators</title>
+    <title>Using the Audiothek RSS Feed Generator</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <!-- weitere Kopfinformationen -->
     <!-- Kommentare werden im Browser nicht angezeigt. -->
   </head>
   <body>
-    <h1>Instruktionen</h1>
-    <p>Diese Seite kann einen RSS-Feed aus den Daten der ARD-Audiothek erzeugen. Dazu sind folgende Schritte nötig:</p>
+    <h1>Instructions</h1>
+    <p>This page can generate an RSS feed from ARD Audiothek data. Follow these steps:</p>
     <ul>
-        <li>Finde die ID des gewünschten Podcasts. Dies ist eine Zahlenfolge die am Ende der URL des Podcasts in der Audiothek hängt. Bspw 94702896 für den Podcast <a href="https://www.ardaudiothek.de/sendung/wild-wild-web-geschichten-aus-dem-internet/94702896/">Wild Wild Web</a> </li>
-        <li>Die folgende Datei öffnen und die ID dort hinter dem = einfügen: <a href="./ardaudiothek-rss.php?show=">ardaudiothek-rss</a>. </li>
-        <li>Beispielsweise ergibt sich so folgender Link: <a href="./ardaudiothek-rss.php?show=94702896">Beispiel Wild Wild Web</a>. </li>
+        <li>Find the ID of the desired podcast. This is a sequence of digits at the end of the podcast’s URL in the Audiothek. For example, 94702896 for the podcast <a href="https://www.ardaudiothek.de/sendung/wild-wild-web-geschichten-aus-dem-internet/94702896/">Wild Wild Web</a>.</li>
+        <li>Open the following link and insert the ID after the =: <a href="./ardaudiothek-rss.php?show=">ardaudiothek-rss</a>.</li>
+        <li>For example, the resulting link is: <a href="./ardaudiothek-rss.php?show=94702896">Example Wild Wild Web</a>.</li>
     </ul>
-    <p>Sollte man nur einen Feed mit den letzten X Folgen abonnieren wollen, kann man auch ein &quot;&amp;latest=X&quot; anhängen: <a href="./ardaudiothek-rss.php?show=94702896&latest=10">Beispiel Wild Wild Web, letzte 10 Folgen</a>. 
+    <p>If you only want to subscribe to the last X episodes, append “&amp;latest=X”: <a href="./ardaudiothek-rss.php?show=94702896&latest=10">Example Wild Wild Web, last 10 episodes</a>.
     </br></br>
 <!--
     <h2>Feed-ID Bestimmen</h2>
@@ -59,18 +59,18 @@
     <input type="button" id="calcIDBtn" value="Feed-ID extrahieren" onclick="javascript:" />
 -->
 
-    <h2>Feed Öffnen</h2>
-    <p>Im folgenden Feld die gewünschte Feed-ID eingeben, dann auf "Feed-Öffnen" klicken.</p>
-    <input type="FeedID" id="FeedID" alt="Feed-ID"/>
-    <input type="button" id="openFeed" value="Feed Öffnen" onClick="javascript: window.open('./ardaudiothek-rss.php?show=' + document.getElementById('FeedID').value);" />
+    <h2>Open Feed</h2>
+    <p>Enter the desired feed ID in the field below, then click “Open Feed”.</p>
+    <input type="FeedID" id="FeedID" alt="Feed ID"/>
+    <input type="button" id="openFeed" value="Open Feed" onClick="javascript: window.open('./ardaudiothek-rss.php?show=' + document.getElementById('FeedID').value);" />
 
 <!-- noch einen Button einbauen, der den Link unten drunter anzeigt und potentiell in die Zwischenablage kopiert? -->
 
 <!-- Podcast-Suche -->
-<h2>Podcast suchen</h2>
-<p>Hier kannst du nach einem Podcast suchen. Klicke auf einen Vorschlag, um die ID zu übernehmen.</p>
-<input type="text" id="searchQuery" placeholder="Suchbegriff..." />
-<input type="button" id="searchBtn" value="Suchen" />
+<h2>Search Podcasts</h2>
+<p>Search for a podcast. Click a suggestion to use its ID.</p>
+<input type="text" id="searchQuery" placeholder="Search term..." />
+<input type="button" id="searchBtn" value="Search" />
 <ul id="searchResults" style="list-style-type:none; padding-left:0;"></ul>
 <script>
 async function searchPodcasts() {
@@ -78,13 +78,13 @@ async function searchPodcasts() {
     const resultsList = document.getElementById('searchResults');
     resultsList.innerHTML = '';
     if (!query) return;
-    resultsList.innerHTML = '<li>Suche läuft...</li>';
+    resultsList.innerHTML = '<li>Searching...</li>';
     try {
         const response = await fetch(`https://api.ardaudiothek.de/search?query=${encodeURIComponent(query)}`);
         const data = await response.json();
         const nodes = (data.data && data.data.search && data.data.search.programSets && data.data.search.programSets.nodes) || [];
         if (nodes.length === 0) {
-            resultsList.innerHTML = '<li>Keine Podcasts gefunden.</li>';
+            resultsList.innerHTML = '<li>No podcasts found.</li>';
             return;
         }
         resultsList.innerHTML = '';
@@ -123,7 +123,7 @@ async function searchPodcasts() {
             resultsList.appendChild(li);
         });
     } catch (e) {
-        resultsList.innerHTML = '<li>Fehler bei der Suche.</li>';
+        resultsList.innerHTML = '<li>Error during search.</li>';
     }
 }
 document.getElementById('searchBtn').onclick = searchPodcasts;
